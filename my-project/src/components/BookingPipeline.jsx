@@ -16,6 +16,8 @@ import '@xyflow/react/dist/style.css';
 import ArtworkForm from './modals/ArtworkStatus';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useContext } from 'react';
+import InvoiceForm from './modals/InvoiceDetailsForm';
+import PaymentStatusForm from './modals/PaymentStatusForm';
 const baseNodeStyle = {
   padding: 10,
   border: '2px solid',
@@ -24,6 +26,7 @@ const baseNodeStyle = {
 };
 import { PipelineContext } from '../context/PipelineContext';
 import PrintingStatus from './modals/PrintingStatus';
+import MountingStatus from './modals/MountingStatus';
 const initialNodes = [
   {
     id: '1',
@@ -263,14 +266,31 @@ const filteredEdges = edges
       )}
 
       {selectedNode.id === '4' && (
-        <>
-          <h2>Invoice Details</h2>
-          <label>Invoice Number:</label>
-          <input type="text" placeholder="INV-0001" />
-        </>
+        <InvoiceForm onConfirm={() => {
+          setSelectedNode(null);  // this will close the modal
+          fitView();
+        }} />
+       
+      )}
+      {selectedNode.id === '5' && (
+        <div>
+ <PaymentStatusForm onConfirm={() => {
+          setSelectedNode(null);  // this will close the modal
+          fitView();
+        }} />
+        </div>
+       
+       
       )}
       {selectedNode.id === '7' && (
         <PrintingStatus onConfirm={() => {
+          setIsBookingConfirmed(true);
+          setSelectedNode(null);  // this will close the modal
+          fitView();
+        }}/>
+      )}
+      {selectedNode.id === '8' && (
+        <MountingStatus onConfirm={() => {
           setIsBookingConfirmed(true);
           setSelectedNode(null);  // this will close the modal
           fitView();
@@ -306,8 +326,8 @@ const modalContentStyle = {
   background: 'white',
   padding: '20px',
   borderRadius: '8px',
-  height:'500px',
-  width: '500px',
+  height:'90vh',
+  width: '60vw',
   textAlign: 'center',
 
 };

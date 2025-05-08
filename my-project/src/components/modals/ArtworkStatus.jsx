@@ -11,7 +11,7 @@ export default function ArtworkForm({ onConfirm }) {
 
   const handleSave = () => {
     if (artworkReceived && setartworkFile) {
-      alert(`PO Document "${setartworkFile.name}" saved!`);
+      console.log(`PO Document "${setartworkFile.name}" saved!`);
       setPipelineData(prev => ({
         ...prev,
         artwork: { confirmed: true}

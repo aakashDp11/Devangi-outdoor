@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
 import { PipelineContext } from '../../context/PipelineContext';
-export default function PrintingStatus({ onConfirm }) {
-  const [printingStatus, setPrintingStatus] = useState(false);
+export default function MountingStatus({ onConfirm }) {
+  const [mountingStatus, setMountingStatus] = useState(false);
 
   const { pipelineData,setPipelineData } = useContext(PipelineContext);
 
@@ -12,7 +12,7 @@ export default function PrintingStatus({ onConfirm }) {
     //   alert(`PO Document "${poFile.name}" saved!`);
       setPipelineData(prev => ({
         ...prev,
-        printingStatus: { confirmed: true}
+        mountingStatus: { confirmed: true}
       }));
       onConfirm();
     
@@ -22,15 +22,15 @@ export default function PrintingStatus({ onConfirm }) {
 
   return (
     <div>
-        {pipelineData?.printingStatus?.confirmed?<h1>Printing done</h1>: <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 border">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Printing done</h2>
+        {pipelineData?.mountingStatus?.confirmed?<h1>Printing done</h1>: <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 border">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Mounting done</h2>
 
       <div className="flex text-xs items-center space-x-3 mb-4">
         <input
           id="printingCheckbox"
           type="checkbox"
-          checked={printingStatus}
-          onChange={() => setPrintingStatus(!printingStatus)}
+          checked={mountingStatus}
+          onChange={() => setMountingStatus(!mountingStatus)}
           className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
         />
         <label htmlFor="printingCheckbox" className="text-gray-700 text-sm">

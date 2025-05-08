@@ -4,7 +4,7 @@ import { PipelineContext } from '../../context/PipelineContext';
 export default function POForm({ onConfirm }) {
   const [poReceived, setPoReceived] = useState(false);
   const [poFile, setPoFile] = useState(null);
-  const { setPipelineData } = useContext(PipelineContext);
+  const { pipelineData,setPipelineData } = useContext(PipelineContext);
 
   const handleFileChange = (e) => {
     setPoFile(e.target.files[0]);
@@ -26,7 +26,8 @@ export default function POForm({ onConfirm }) {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 border">
+    <>
+    {pipelineData?.po?.confirmed ?<h1>Po status confirmed</h1>:<div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 border">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">PO Received</h2>
 
       <div className="flex text-xs items-center space-x-3 mb-4">
@@ -71,6 +72,8 @@ export default function POForm({ onConfirm }) {
           </button> */}
         </div>
       )}
-    </div>
+    </div>}
+    
+    </>
   );
 }
