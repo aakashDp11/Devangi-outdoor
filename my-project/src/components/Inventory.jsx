@@ -172,8 +172,11 @@ export default function InventoryDashboard() {
               onChange={(e) => setAvailability(e.target.value)}
             >
               <option value="">All</option>
-              <option value="true">Available</option>
-              <option value="false">Not Available</option>
+              <option value="Completely available">Completely available</option>
+              <option value="Partialy available">Partialy available</option>
+              <option value="Completely booked">Completely booked</option>
+              {/* <option value="true">Available</option>
+              <option value="false">Not Available</option> */}
             </select>
           </div>
         </div>

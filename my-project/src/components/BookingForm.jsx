@@ -6,7 +6,7 @@ import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
 import { useBookingForm } from '../context/BookingFormContext';
 import { useState } from 'react';
-
+import { toast } from 'sonner';
 export default function CreateOrderBasicInfo() {
   const navigate = useNavigate();
   const { basicInfo, setBasicInfo,proposalId } = useBookingForm();
@@ -116,6 +116,82 @@ export default function CreateOrderBasicInfo() {
               }
             />
           </div>
+          <div className="col-span-2">
+  <label className="block text-xs font-medium mb-1">Campaign Images</label>
+  {/* <input
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={(e) => {
+      const files = Array.from(e.target.files);
+      const readers = files.map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+      });
+
+      Promise.all(readers).then(images => {
+        setBasicInfo(prev => ({
+          ...prev,
+          campaignImages: [...(prev.campaignImages || []), ...images],
+        }));
+      });
+    }}
+    className="w-full border p-2 rounded mt-1"
+  /> */}
+  <input
+  type="file"
+  accept=".jpg,.jpeg,.png,.webp"
+  multiple
+  onChange={(e) => {
+    const files = Array.from(e.target.files);
+    const validFiles = [];
+
+    files.forEach((file) => {
+      const isValidType = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
+
+      if (!isValidType) {
+        toast.error(`Invalid format: ${file.name}. Only JPG, PNG, and WEBP allowed.`);
+      } else if (!isValidSize) {
+        toast.error(`File too large: ${file.name} exceeds 10MB limit.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    setBasicInfo(prev => ({
+      ...prev,
+      campaignImages: [...(prev.campaignImages || []), ...validFiles],
+    }));
+  }}
+  className="w-full border p-2 rounded mt-1"
+/>
+
+  <div className="flex flex-wrap gap-2 mt-2">
+    {basicInfo.campaignImages?.map((img, index) => (
+      <div key={index} className="relative">
+        <img src={img} alt={`campaign-${index}`} className="h-20 w-20 object-cover rounded border" />
+        <button
+          onClick={() => {
+            const updated = [...basicInfo.campaignImages];
+            updated.splice(index, 1);
+            setBasicInfo(prev => ({
+              ...prev,
+              campaignImages: updated
+            }));
+          }}
+          className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1 hover:bg-red-700"
+        >
+          ✕
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
+
           <div>
             <label className="block text-xs font-medium">Brand Display Name</label>
             <input

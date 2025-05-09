@@ -21,7 +21,13 @@ const bookingSchema = new Schema({
     enum: ['Automotive', 'Clothing & Apparel', 'Ecommerce', 'EdTech', 'Entertainment', 'FMCG']
   },
   description: { type: String },
-  spaces: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Space' }],
+  // spaces: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Space' }],
+  spaces: [{
+    id: { type: mongoose.Schema.Types.ObjectId, ref: 'Space', required: true },
+    selectedUnits: { type: Number, required: true, min: 1 }
+  }]
+,  
+  campaignImages: [String],
   pipeline: {
     type: Map,
     of: new Schema({

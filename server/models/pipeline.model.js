@@ -45,7 +45,7 @@ const pipelineSchema = new Schema({
   mountingStatus: {
     confirmed: { type: Boolean, default: false },
   },
-
+ 
   advertisingLive: {
     started: { type: Boolean, default: false },
   },

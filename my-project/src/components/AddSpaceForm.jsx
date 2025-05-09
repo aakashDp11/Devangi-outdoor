@@ -78,27 +78,14 @@ export default function AddSpaceForm() {
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log('Submitting form:', form);
-  // };
+
 
   return (
     <div className="p-6 md:ml-64 min-h-screen">
         <Navbar/>
       <form onSubmit={handleSubmit} className="max-w-screen-xl mx-auto">
         <div className="text-2xl font-semibold mb-6">Create Spaces</div>
-        {/* <div className="flex gap-6 mb-6 text-sm font-medium">
-          {stepOrder.map((label) => (
-            <div key={label} className={
-              completedSteps.includes(label)
-                ? 'text-green-600 flex items-center gap-1'
-                : 'text-black flex items-center gap-1'
-            }>
-              {completedSteps.includes(label) ? '✓' : ''} {label} Information
-            </div>
-          ))}
-        </div> */}
+        
         <div className="flex gap-6 mb-6 text-sm font-medium">
   {stepOrder.map((label) => (
     <div
@@ -126,10 +113,24 @@ export default function AddSpaceForm() {
               <Input label="Landlord" name="landlord" value={form.landlord} onChange={handleInputChange} />
               <Input label="Inventory Owner (Organization)" name="organization" value={form.organization} disabled />
               <Input label="Peer Media Owner" name="peerMediaOwner" value={form.peerMediaOwner} onChange={handleInputChange} />
+              <Select
+  label="Traded"
+  name="traded"
+  value={form.traded}
+  onChange={handleInputChange}
+  required
+>
+  <option value="">Select...</option>
+  <option value="true">Yes</option>
+  <option value="false">No</option>
+</Select>
+
               <Select label="Space Type" name="spaceType" value={form.spaceType} onChange={handleInputChange} required>
                 <option value="">Select...</option>
                 <option value="Billboard">Billboard</option>
-                <option value="Digital Screen">Digital Screen</option>
+                <option value="DOOH">DOOH</option>
+                <option value="Pole kiosk">Pole kiosk</option>
+                <option value="Gantry">Gantry</option>
               </Select>
               <Select label="Category" name="category" value={form.category} onChange={handleInputChange} required>
                 <option value="">Select...</option>
@@ -190,7 +191,29 @@ export default function AddSpaceForm() {
                 <option value="Front Lit">Front Lit</option>
                 <option value="Back Lit">Back Lit</option>
               </Select>
-              <Input label="Unit" name="unit" value={form.unit} onChange={handleInputChange} required />
+              {/* <Input label="Unit" name="unit" value={form.unit} onChange={handleInputChange} required /> */}
+              <Input
+  label="Unit"
+  name="unit"
+  value={form.unit}
+  onChange={(e) => {
+    const { value } = e.target;
+    const maxMap = {
+      Billboard: 2,
+      DOOH: 10,
+      'Pole kiosk': 10,
+      Gantry: 1
+    };
+    const max = maxMap[form.spaceType];
+    if (value === '' || Number(value) <= max) {
+      handleInputChange(e);
+    } else {
+      alert(`Max units allowed for ${form.spaceType || 'this type'} is ${max}`);
+    }
+  }}
+  required
+/>
+
               <Input label="Resolutions" name="resolution" value={form.resolution} onChange={handleInputChange} />
               <Input label="Width (in ft)" name="width" value={form.width} onChange={handleInputChange} />
               <Input label="Height (in ft)" name="height" value={form.height} onChange={handleInputChange} />

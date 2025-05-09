@@ -15,6 +15,7 @@
       clientGst: '',
       brandName: '',
       clientType: '',
+      campaignImages: [],
     });
     const [proposalId, setProposalId] = useState(null);
 
@@ -40,6 +41,7 @@
         clientGst: '',
         brandName: '',
         clientType: '',
+        campaignImages: [],
       });
   
       setOrderInfo({

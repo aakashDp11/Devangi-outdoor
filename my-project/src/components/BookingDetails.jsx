@@ -85,12 +85,35 @@ export default function BookingDetails() {
               <div><strong>Client Type:</strong> {booking.clientType || 'N/A'}</div>
               <div><strong>Industry:</strong> {booking.industry || 'N/A'}</div>
               <div><strong>Description:</strong> {booking.description || 'N/A'}</div>
+              {booking.campaignImages && booking.campaignImages.length > 0 && (
+  <div className="flex flex-col">
+    <strong>Campaign Images:</strong>
+    <div className="flex flex-wrap gap-3 mt-2">
+      {booking.campaignImages.map((img, index) => (
+        <div key={index} className="w-28 h-28 rounded overflow-hidden border shadow-sm">
+          <img
+            src={`http://localhost:3000${img}`} // Assumes "/uploads/filename" format
+            alt={`Campaign ${index + 1}`}
+            className="object-cover w-full h-full"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
               <div><strong>Created At:</strong> {new Date(booking.createdAt).toLocaleString()}</div>
               
             </CardContent>
           </Card>
           <div className="flex gap-2 mt-4 md:mt-[3%]">
             <Button onClick={() => navigate('/booking-dashboard')}>Back</Button>
+            <Button
+  className="bg-blue-600 hover:bg-blue-700"
+  onClick={() => navigate(`/pipeline/${id}`)}
+>
+  Track Finance
+</Button>
             <Button className="ml-auto bg-red-600 hover:bg-red-700" onClick={() => setShowDeletePopup(true)}>
               Delete
             </Button>
@@ -108,6 +131,8 @@ export default function BookingDetails() {
               <Button className="bg-gray-400 hover:bg-gray-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110" onClick={() => setShowDeletePopup(false)}>
                 Cancel
               </Button>
+              
+
               <Button className="bg-red-600 hover:bg-red-700 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110" onClick={handleDelete}>
                 Delete
               </Button>

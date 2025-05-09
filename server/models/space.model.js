@@ -58,7 +58,8 @@ const spaceSchema = new Schema({
   spaceName: { type: String, required: true },
   landlord: { type: String },
   peerMediaOwner: { type: String },
-  spaceType: { type: String, enum: ['Billboard', 'Digital Screen'], required: true },
+  spaceType: { type: String, enum: ['Billboard', 'DOOH','Gantry','Pole Kiosk'], required: true },
+  traded:{type:Boolean,default:false},
   category: { type: String, enum: ['Retail', 'Transit'], required: true },
   mediaType: { type: String, enum: ['Static', 'Digital'], required: true },
   price: { type: Number },
@@ -67,7 +68,42 @@ const spaceSchema = new Schema({
   demographics: { type: String, enum: ['Urban', 'Rural'] },
   description: { type: String },
   illuminations: { type: String, enum: ['Front lit', 'Back lit'] },
-  unit: { type: Number },
+  // unit: { type: Number },
+  unit: {
+    type: Number,
+    validate: {
+      validator: function (value) {
+        const limits = {
+          'Gantry': 1,
+          'DOOH': 10,
+          'Billboard': 2,
+          'Pole Kiosk': 10
+        };
+        return value <= limits[this.spaceType];
+      },
+      message: props => `Maximum units allowed for ${props.instance.spaceType} is exceeded.`
+    }
+  }
+,
+occupiedUnits: {
+  type: Number,
+  default: 0,
+  validate: [
+    {
+      validator: function (value) {
+        return value >= 0;
+      },
+      message: 'Occupied units cannot be negative.'
+    },
+    {
+      validator: function (value) {
+        return value <= this.unit;
+      },
+      message: props => `Occupied units (${props.value}) cannot exceed total units (${props.instance.unit}).`
+    }
+  ]
+}
+,
   width: { type: Number },
   height: { type: Number },
   additionalTags: { type: String },
@@ -95,14 +131,14 @@ const spaceSchema = new Schema({
   tier: { type: String, enum: ['Tier 1', 'Tier 2'] },
   // facing: { type: String, enum: ['Single Facing', 'Double Facing'],default:'Single Facing' },
   faciaTowards: { type: String },
-
+  overlappingBooking:{type:Boolean,default:false},
   // ✅ New fields
   mainPhoto: String,
   inventory: { type: String },   // could store image URL or file reference
   longShot: { type: String },
   closeShot: { type: String },
   otherPhotos: [String],
-  available: { type: Boolean, default: true },
+  availability: { type: String,enum: ['Completely available', 'Partialy available', 'Completely booked'], default: 'Completely available' },
   dates: [{ type: String, default:"",match: /^\d{2}-\d{2}-\d{2}$/ }] // e.g., "24-04-25"
 }, {
   timestamps: true
