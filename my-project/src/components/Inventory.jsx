@@ -4,6 +4,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import toast from 'react-hot-toast';
 
 const Button = ({ children, className = '', ...props }) => (
   <button className={`px-4 py-2 rounded bg-black text-white hover: transition ${className}`} {...props}>
@@ -76,6 +79,42 @@ export default function InventoryDashboard() {
     };
     fetchSpaces();
   }, []);
+  const handleDownloadExcel = () => {
+    if (filteredData.length === 0) {
+      // alert('No data to export!');
+     
+      return;
+    }
+  
+    // Prepare data for Excel
+    const excelData = filteredData.map(item => ({
+      'Space Name': item.spaceName,
+      'Address': item.address,
+      'City': item.city,
+      'State': item.state,
+      'Zone': item.zone,
+      'Space Type': item.spaceType,
+      'Availability': item.availability,
+      'Units': item.unit,
+      'Occupied Units': item.occupiedUnits,
+      'Price': item.price,
+      'Footfall': item.footfall,
+      'Audience': item.audience,
+      'Demographics': item.demographics,
+      'Dates': item.dates?.join(', ')
+    }));
+  
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inventories');
+  
+    // Write to binary and trigger download
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'filtered_inventories.xlsx');
+  };
+  
 
   const filteredData = spaces.filter((item) => {
     // const matchesSearch = item.spaceName?.toLowerCase().includes(search.toLowerCase());
@@ -93,8 +132,8 @@ export default function InventoryDashboard() {
       item.zone?.toLowerCase().includes(selectedRegion.toLowerCase());
 
     const matchesAvailability =
-      availability === '' || String(item.available) === availability;
-
+      // availability === '' || String(item.available) === availability;
+      availability === '' || item.availability === availability;
 
       const matchesDate = !selectedDate || (() => {
         if (!item.dates || item.dates.length === 0) return false;
@@ -142,6 +181,13 @@ export default function InventoryDashboard() {
             <Button onClick={() => navigate('/add-space')} className="bg-black text-xs text-white w-full md:w-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110">
               + Add Space
             </Button>
+            <Button
+  onClick={handleDownloadExcel}
+  className="bg-black text-xs text-white w-full md:w-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110"
+>
+  Download Excel
+</Button>
+
           </div>
         </div>
 

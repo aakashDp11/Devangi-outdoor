@@ -65,6 +65,22 @@ export default function BookingsDashboard1() {
     item.campaignName?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const getLatestPipelineStatus = (pipeline) => {
+    if (!pipeline) return 'Yet to be started';
+  
+    if (pipeline.advertisingLive?.started) return 'Advertising Live';
+    if (pipeline.mountingStatus?.confirmed) return 'Mounting Done';
+    if (pipeline.printingStatus?.confirmed) return 'Printing Done';
+    if (pipeline.payment?.paymentDue === 0 && pipeline.payment?.totalPaid > 0) return 'Payment Done';
+    if (pipeline.invoice?.invoiceNumber) return 'Invoice Received';
+    if (pipeline.artwork?.confirmed) return 'Artwork Received';
+    if (pipeline.po?.confirmed) return 'PO Received';
+    if (pipeline.bookingStatus?.confirmed) return 'Booking Confirmed';
+  
+    return 'Yet to be started';
+  };
+  
+
   const paginatedData = filteredData.slice((currentPage - 1) * perPage, currentPage * perPage);
   const totalPages = Math.ceil(filteredData.length / perPage);
    useEffect(() => {
@@ -104,17 +120,17 @@ export default function BookingsDashboard1() {
         <div className={`mt-6 grid grid-cols-1 gap-4 w-full transform transition-all duration-700 ease-out ${
   isAnimated ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
 }`}>
-          {paginatedData.map((item) => (
+          {/* {paginatedData.map((item) => (
             <Card key={item._id} className="transition hover:shadow-md cursor-pointer" onClick={() => navigate(`/booking/${item._id}`)}>
               <CardContent className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                {/* Booking Info */}
+                
                 <div className="flex-1 flex flex-col gap-1">
                   <div className="text-sm font-semibold break-words">{item.companyName}</div>
                   <div className="text-xs text-gray-600">Client: {item.clientName || 'No Client'}</div>
                   <div className="text-xs text-gray-600">Campaign: {item.campaignName || 'No Campaign'}</div>
                 </div>
 
-                {/* Tags */}
+             
                 <div className="flex flex-wrap gap-2 items-center">
                   <span className="text-xs px-2 py-1 rounded bg-green-200">
                     {item.clientType || 'Client Type'}
@@ -125,7 +141,38 @@ export default function BookingsDashboard1() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          ))} */}
+          {paginatedData.map((item) => (
+  <Card key={item._id} className="transition hover:shadow-md cursor-pointer" onClick={() => navigate(`/booking/${item._id}`)}>
+    <CardContent className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      
+      {/* Booking Info */}
+      <div className="flex-1 flex flex-col gap-1">
+        <div className="text-sm font-semibold break-words">{item.companyName}</div>
+        <div className="text-xs text-gray-600">Client: {item.clientName || 'No Client'}</div>
+        <div className="text-xs text-gray-600">Campaign: {item.campaignName || 'No Campaign'}</div>
+      </div>
+
+      {/* Latest Pipeline Status Tag */}
+      <div className="flex items-center">
+        <span className="text-xs px-2 py-1 rounded bg-blue-200">
+          {getLatestPipelineStatus(item.pipeline)}
+        </span>
+      </div>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="text-xs px-2 py-1 rounded bg-green-200">
+          {item.clientType || 'Client Type'}
+        </span>
+        <span className="text-xs px-2 py-1 rounded bg-purple-100">
+          {item.industry || 'Industry'}
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+))}
+
         </div>
 
         <div className="mt-6">

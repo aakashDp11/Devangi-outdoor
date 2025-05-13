@@ -2,7 +2,7 @@ import express from 'express';
 import Booking from '../models/booking.model.js';
 import Space from '../models/space.model.js';
 import upload from '../middleware/multer.middleware.js';
-
+import pipelineModel from '../models/pipeline.model.js';
 const router = express.Router();
 
 // CREATE - POST /api/bookings
@@ -161,14 +161,44 @@ router.post('/', upload.array('campaignImages', 10), async (req, res) => {
 
 
 // READ ALL - GET /api/bookings
+// router.get('/', async (req, res) => {
+//   try {
+//     const bookings = await Booking.find().populate('spaces');
+//     res.json(bookings);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to fetch bookings', details: error.message });
+//   }
+// });
+
+// READ ALL - GET /api/bookings
 router.get('/', async (req, res) => {
   try {
     const bookings = await Booking.find().populate('spaces');
-    res.json(bookings);
+
+    // ✅ Fetch all pipelines for these bookings
+    const bookingIds = bookings.map(b => b._id);
+    const pipelines = await pipelineModel.find({ booking: { $in: bookingIds } });
+
+    // ✅ Create a pipeline lookup map { bookingId: pipeline }
+    const pipelineMap = {};
+    pipelines.forEach(p => {
+      pipelineMap[p.booking.toString()] = p;
+    });
+
+    // ✅ Attach pipeline to each booking
+    const bookingsWithPipeline = bookings.map(b => ({
+      ...b.toObject(),
+      pipeline: pipelineMap[b._id.toString()] || null,
+    }));
+
+    res.json(bookingsWithPipeline);
+
   } catch (error) {
+    console.error('Error fetching bookings:', error);
     res.status(500).json({ error: 'Failed to fetch bookings', details: error.message });
   }
 });
+
 
 // READ ONE - GET /api/bookings/:id
 router.get('/:id', async (req, res) => {

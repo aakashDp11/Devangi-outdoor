@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner'; // ✅ Import toast
 import Navbar from './Navbar';
-
+import BookingFlow from './BookingPipeline';
+import { ReactFlowProvider } from '@xyflow/react';
+import { PipelineProvider } from '../context/PipelineContext';
 const Button = ({ children, className = '', ...props }) => (
   <button className={`px-4 py-2 rounded bg-black text-white hover: transition ${className}`} {...props}>
     {children}
@@ -106,7 +108,7 @@ export default function BookingDetails() {
               
             </CardContent>
           </Card>
-          <div className="flex gap-2 mt-4 md:mt-[3%]">
+          {/* <div className="flex gap-2 mt-4 md:mt-[3%]">
             <Button onClick={() => navigate('/booking-dashboard')}>Back</Button>
             <Button
   className="bg-blue-600 hover:bg-blue-700"
@@ -117,7 +119,12 @@ export default function BookingDetails() {
             <Button className="ml-auto bg-red-600 hover:bg-red-700" onClick={() => setShowDeletePopup(true)}>
               Delete
             </Button>
-          </div>
+          </div> */}
+      <PipelineProvider>
+        <ReactFlowProvider>
+        <BookingFlow />
+        </ReactFlowProvider>
+      </PipelineProvider>
         </div>
       </main>
 

@@ -94,7 +94,7 @@ const BookingStatusForm = ({ bookingId, onConfirm }) => {
   };
 
   return (
-    <div>
+    <div className='w-full h-full'>
       {pipelineData?.bookingStatus?.confirmed ? (
         <h1>Already Booked with ID: {pipelineData.bookingStatus.reference}</h1>
       ) : (
@@ -115,8 +115,8 @@ const BookingStatusForm = ({ bookingId, onConfirm }) => {
 
           {hasBooking && (
             <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+              <div className='px-0'>
+                <label className="block mr-4 text-xs font-medium text-gray-700 mb-1">
                   Booking Reference Number:
                 </label>
                 <input
