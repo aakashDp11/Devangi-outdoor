@@ -101,10 +101,10 @@ export default function ArtworkForm({ bookingId, onConfirm }) {
       try {
         const res = await axios.get(`http://localhost:3000/api/pipeline/${bookingId}`);
         const artwork = res.data?.artwork || {};
-
+        console.log("artwork is",artwork);
         if (artwork.confirmed && artwork.documentUrl) {
           setIsArtworkSaved(true);
-          setArtworkUrl(artwork.documentUrl);
+          setArtworkUrl(`http://localhost:3000${artwork.documentUrl}`);
         }
       } catch (err) {
         console.error('Failed to fetch artwork data:', err);
@@ -134,7 +134,8 @@ export default function ArtworkForm({ bookingId, onConfirm }) {
 
         setPipelineData(res.data);
         setIsArtworkSaved(true);
-        setArtworkUrl(res.data.artwork?.documentUrl || '');
+        setArtworkUrl(res.data.artwork?.documentUrl ? `http://localhost:3000${res.data.artwork.documentUrl}` : '');
+
         onConfirm();
       } else {
         alert('Please upload artwork if received.');

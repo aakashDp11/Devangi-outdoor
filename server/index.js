@@ -12,6 +12,9 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.routes.js';
 import pipelineRoutes from './routes/pipeline.routes.js'
+import path from "path";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 // Enable CORS for all origins (or specify origin)
 dotenv.config();
 const app = express();
@@ -19,7 +22,13 @@ const port = 3000;
 // MongoDB URI and DB name
 const MONGO_URI = 'mongodb+srv://devangioutdoor:vNQnXCHKYkc1QulR@cluster0.jhsmpz9.mongodb.net/?retryWrites=true&w=majority&tls=true&appName=Cluster0';
 const DB_NAME = 'testdb';
-app.use('/uploads', express.static('uploads'));
+// app.use('/uploads', express.static('uploads'));
+app.get('/uploads/:filename', (req, res) => {
+  const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+  const filePath = path.join(__dirname, 'uploads', req.params.filename);
+  res.download(filePath); // ✅ Force download
+});
 app.use(cors({
   origin: 'http://localhost:5173', // your Vite frontend URL
   credentials: true,              // if you’re using cookies or auth headers
